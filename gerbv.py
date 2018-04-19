@@ -18,8 +18,7 @@ if platform.system() == 'Linux':
 else:
     _libgerbv = CDLL(library_path)
 
-
-class Aperture:
+class Aperture(object):
     @classmethod
     def create_circle_aperture(cls, diameter_in_mm):
         params = c_double * APERTURE_PARAMETERS_MAX
@@ -54,7 +53,7 @@ class Aperture:
         return self._aperture.unit
 
 
-class Image:
+class Image(object):
     _libgerbv.gerbv_image_create_line_object.argtypes = [POINTER(GerbvImage), c_double, c_double, c_double, c_double, c_double, c_gerbv_aperture_type_t]
     _libgerbv.gerbv_create_image.argtypes = [POINTER(GerbvImage), c_char_p]
     _libgerbv.gerbv_create_image.restype = POINTER(GerbvImage)
@@ -130,7 +129,7 @@ class Image:
         return _libgerbv.gerbv_export_rs274x_file_from_image(filename.encode('utf-8'), self._image, transformation)
 
 
-class FileInfo:
+class FileInfo(object):
     def __init__(self, file_info):
         self._file_info = file_info
         self.image = Image(self._file_info.image)
@@ -171,7 +170,7 @@ class FileInfo:
         self._is_visible = is_visible
 
     def translate(self, x, y):
-        self._file_info.transform.translateX += x
+        self._file_info.transform.translateX += xcolor
         self._file_info.transform.translateY += y
 
     def scale(self, x, y):
@@ -195,7 +194,7 @@ class FileInfo:
         self._inverted = inverted
 
 
-class Project:
+class Project(object):
     _libgerbv.gerbv_create_project.restype = POINTER(GerbvProject)
     _libgerbv.gerbv_open_layer_from_filename.argtypes = [POINTER(GerbvProject), c_char_p]
     _libgerbv.gerbv_export_pdf_file_from_project.argtypes = [POINTER(GerbvProject), POINTER(GerbvRenderInfo), c_char_p]
@@ -217,7 +216,9 @@ class Project:
 
     @background.setter
     def background(self, color):
+        print "setting background"
         self._project.background = GdkColor(*[int(x * 65535) for x in color])
+
         self._background = color
 
     @property
@@ -243,7 +244,7 @@ class Project:
         file_info = FileInfo(self._project.file[self._project.last_loaded].contents)
         self.file.append(file_info)
         return file_info
-
+    
     def export_pdf_file(self, filename, size):
         if self.files_loaded() == 0:
             raise GerberNotFoundError
