@@ -170,7 +170,7 @@ class FileInfo(object):
         self._is_visible = is_visible
 
     def translate(self, x, y):
-        self._file_info.transform.translateX += xcolor
+        self._file_info.transform.translateX += x
         self._file_info.transform.translateY += y
 
     def scale(self, x, y):
