@@ -216,9 +216,7 @@ class Project(object):
 
     @background.setter
     def background(self, color):
-        print "setting background"
         self._project.background = GdkColor(*[int(x * 65535) for x in color])
-
         self._background = color
 
     @property
