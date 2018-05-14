@@ -242,7 +242,7 @@ class Project(object):
         file_info = FileInfo(self._project.file[self._project.last_loaded].contents)
         self.file.append(file_info)
         return file_info
-    
+
     def export_pdf_file(self, filename, size):
         if self.files_loaded() == 0:
             raise GerberNotFoundError
@@ -314,6 +314,5 @@ class Project(object):
     def _generate_render_info(self, size, dpi=72):
         return GerbvRenderInfo(dpi, dpi, 0, 0, 3, int(size[0] * dpi), int(size[1] * dpi))
 
-    def _generate_auto_sized_render_info(self, dpi=72):
-        margin = 0.1
+    def _generate_auto_sized_render_info(self, dpi=72, margin=0.1):
         return GerbvRenderInfo(dpi, dpi, self.min_x - margin, self.min_y - margin, 3, int((self.width + margin * 2) * dpi), int((self.height + margin * 2) * dpi))
