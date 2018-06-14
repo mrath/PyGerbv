@@ -14,7 +14,15 @@ library_path = find_library('gerbv')
 if not library_path:
     raise ModuleNotFoundError
 if platform.system() == 'Linux':
-    _libgerbv = CDLL('/usr/local/lib/' + library_path)
+    _libgerbv = None
+    lookup_paths = ['/usr/local/lib/', '/usr/lib/']
+    for p in lookup_paths:
+        try:
+            _libgerbv = CDLL(p + library_path)
+        except:
+            continue
+    if _libgerbv is None:
+        raise ModuleNotFoundError("gerbv library not found in any of the paths %s" % lookup_paths)
 else:
     _libgerbv = CDLL(library_path)
 
